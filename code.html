@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #6dd5ed, #2193b0);
+      color: #fff;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      width: 80%;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #ff9800;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e68900;
+    }
+    .weather {
+      margin-top: 20px;
+    }
+    .error {
+      color: #ffcccb;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌤️ Weather App</h2>
+    <input type="text" id="city" placeholder="Enter city name">
+    <br>
+    <button onclick="getWeather()">Get Weather</button>
+    <div class="weather" id="weather"></div>
+    <div class="error" id="error"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("city").value;
+      const apiKey = "YOUR_API_KEY"; // Replace with your OpenWeather API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === "404") {
+          document.getElementById("error").innerText = "City not found!";
+          document.getElementById("weather").innerHTML = "";
+        } else {
+          document.getElementById("error").innerText = "";
+          document.getElementById("weather").innerHTML = `
+            <h3>${data.name}, ${data.sys.country}</h3>
+            <p>🌡️ Temperature: ${data.main.temp} °C</p>
+            <p>☁️ Condition: ${data.weather[0].description}</p>
+            <p>💧 Humidity: ${data.main.humidity}%</p>
+          `;
+        }
+      } catch (error) {
+        document.getElementById("error").innerText = "Error fetching data.";
+        document.getElementById("weather").innerHTML = "";
+      }
+    }
+  </script>
+</body>
+</html>
